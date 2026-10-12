@@ -13,6 +13,15 @@ clear governance limitations.
 > **Scope:** portfolio and educational demonstration only. This model is not
 > approved for real lending, underwriting, pricing, or adverse-action decisions.
 
+## Live demo
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://credit-risk-model-validation-mu92yhuqiqsyi6hjtwrswb.streamlit.app/)
+
+Explore the deployed
+[Credit Risk Model Validation Dashboard](https://credit-risk-model-validation-mu92yhuqiqsyi6hjtwrswb.streamlit.app/),
+including the validated `0.19` operating threshold, cost scenarios, calibration,
+SHAP importance, and subgroup diagnostics.
+
 ## Business question
 
 Can the next-month probability of credit-card default be estimated accurately
@@ -113,7 +122,7 @@ regulatory constraints.
 
 ## Interactive dashboard
 
-The Streamlit dashboard provides:
+The [live Streamlit dashboard](https://credit-risk-model-validation-mu92yhuqiqsyi6hjtwrswb.streamlit.app/) provides:
 
 - holdout ROC-AUC, PR-AUC, KS, and Brier score;
 - a threshold and cost scenario simulator;
