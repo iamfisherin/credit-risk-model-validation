@@ -120,6 +120,30 @@ The 0.19 threshold reduced the illustrative holdout cost by 23.6%. It is not a
 universal cutoff: a real institution must estimate costs from exposure, loss
 given default, recovery, operational capacity, and policy constraints.
 
+## Capacity-constrained policy evaluation
+
+An additional policy analysis applies review-capacity constraints to
+the existing model scores.
+
+- Selection data: development out-of-fold predictions.
+- Candidate thresholds: the existing 0.01-step threshold grid.
+- Objective: minimize 5 × false negatives + false positives,
+  subject to the development review-rate limit.
+- Dashboard capacity scenarios: 10%, 15%, 20%, 25%, and 30%.
+- Evaluation data: the existing holdout predictions.
+
+Under a 15% development review limit, the selected threshold is 0.43.
+The development review rate is 14.81%. On the holdout sample, the
+policy flags 886 of 6,000 customers (14.77%), achieves 41.97% default
+recall, and misses 770 defaults.
+
+These results assume that all flagged customers enter review.
+They measure default identification and workload. The financial
+effect of review or intervention has not been estimated.
+
+The capacity constraint applies to the development sample. Future
+review volumes can exceed the limit if score distributions change.
+
 ## Explainability
 
 Global SHAP analysis identified delinquency severity and persistence as the

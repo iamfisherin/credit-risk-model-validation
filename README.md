@@ -89,6 +89,40 @@ regulatory constraints.
 
 ## Analytical workflow
 
+## Capacity-constrained review policy
+
+What if the team can review at most 15% of scored customers?
+
+For each capacity scenario, the dashboard filters the development
+out-of-fold threshold grid to retain thresholds within the review limit,
+then selects the threshold with the lowest illustrative error cost.
+The cost assumption assigns 5 units to a missed default and 1 unit to
+a non-default customer flagged for review.
+
+The selected threshold is then evaluated on the existing holdout
+predictions.
+
+| Holdout result | Default threshold | 15% capacity policy | Cost-selected threshold |
+|---|---:|---:|---:|
+| Threshold | 0.50 | 0.43 | 0.19 |
+| Customers flagged for review | 724 | 886 | 2,214 |
+| Review rate | 12.07% | 14.77% | 36.90% |
+| Default recall | 36.55% | 41.97% | 68.43% |
+| Missed defaults | 842 | 770 | 419 |
+| Illustrative error cost | 4,449 | 4,179 | 3,401 |
+
+Compared with the default threshold, the 15% capacity policy flags
+162 additional customers and identifies 72 additional defaults.
+
+The dashboard supports development review limits of 10%, 15%, 20%,
+25%, and 30%. Threshold selection uses the existing 0.01-step grid.
+Every flagged customer is assumed to enter review. The cost calculation
+excludes staff time and the effect of any subsequent intervention.
+
+A fixed threshold does not guarantee the same review rate on future
+batches. Strict operational limits would require a capacity-controlled
+queue, such as reviewing the highest-scoring customers within each batch.
+
 1. Validate missing values, identifiers, category codes, duplicates, and
    numerical ranges.
 2. Preserve an untouched stratified holdout sample.
