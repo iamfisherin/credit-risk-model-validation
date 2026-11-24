@@ -504,3 +504,92 @@ st.caption(
     "Portfolio demonstration using the public UCI Default of Credit Card "
     "Clients dataset. Business costs are illustrative."
 )
+
+with threshold_tab:
+    st.subheader("Review capacity comparison")
+
+    capacity_percent = st.select_slider(
+        "Maximum development review rate (%)",
+        options=[10, 15, 20, 25, 30],
+        value=15,
+    )
+    capacity_limit = capacity_percent / 100
+
+    # 在开发集上，根据复核容量选择阈值
+    development_grid = pd.read_csv(
+        TABLE_DIR / "development_threshold_grid.csv"
+    )
+
+    feasible = development_grid.loc[
+        development_grid["predicted_high_risk_rate"] <= capacity_limit
+    ]
+
+    # 沿用开发集阈值表中的 5:1 示例成本
+    capacity_choice = feasible.sort_values(
+        by=["cost", "threshold"],
+        ascending=[True, False],
+    ).iloc[0]
+
+    capacity_threshold = float(capacity_choice["threshold"])
+    development_review_rate = float(
+        capacity_choice["predicted_high_risk_rate"]
+    )
+
+    st.caption(
+        f"Development-selected threshold: {capacity_threshold:.2f}. "
+        f"Development OOF review rate: {development_review_rate:.2%}."
+    )
+
+    # 使用同一测试集评估三种策略
+    strategies = [
+        ("Default threshold", 0.50),
+        (f"Capacity {capacity_percent}%", capacity_threshold),
+        ("Cost-selected threshold", development_threshold),
+    ]
+
+    comparison_rows = []
+
+    for strategy_name, cutoff in strategies:
+        result = calculate_metrics(
+            actual,
+            probability,
+            cutoff,
+            fn_cost=5,
+            fp_cost=1,
+        )
+
+        comparison_rows.append({
+            "Strategy": strategy_name,
+            "Threshold": cutoff,
+            "Customers flagged for review": (
+                result["true_positive"] + result["false_positive"]
+            ),
+            "Review rate": result["high_risk_rate"],
+            "Default recall": result["recall"],
+            "Missed defaults": result["false_negative"],
+            "Illustrative error cost": result["cost"],
+        })
+
+    capacity_display = pd.DataFrame(comparison_rows)
+
+    st.dataframe(
+        capacity_display.style.format({
+            "Threshold": "{:.2f}",
+            "Customers flagged for review": "{:,.0f}",
+            "Review rate": "{:.2%}",
+            "Default recall": "{:.2%}",
+            "Missed defaults": "{:,.0f}",
+            "Illustrative error cost": "{:,.0f}",
+        }),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.caption(
+        "Capacity thresholds are selected from the development OOF "
+        "threshold grid using a fixed illustrative 5:1 false-negative "
+        "to false-positive cost ratio. All table results use the "
+        "holdout sample. Every flagged customer is assumed to enter "
+        "review. A fixed threshold can produce a holdout review rate "
+        "above or below the development capacity limit."
+    )

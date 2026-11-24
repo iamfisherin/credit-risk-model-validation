@@ -1,0 +1,4 @@
+operating_point,threshold,review_count,high_risk_rate,recall,false_negative,cost
+Default threshold,0.5,724,0.1206666666666666,0.3654860587792012,842,4449
+Capacity 15%,0.43,886,0.14766666666666667,0.41974378296910325,770,4179
+Selected threshold,0.19,2214,0.369,0.6842501883948756,419,3401
